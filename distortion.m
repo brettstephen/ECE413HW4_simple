@@ -7,19 +7,19 @@ function [output]=distortion(constants,inSound,gain,tone)
 %plot(-3:0.01:3,[logistic((-3:0.01:0)*2)-0.5 2*(logistic((0.01:0.01:3)*2)-0.5)])
 fs = constants.fs;
 
-sound = inSound*gain;
-output = transfer(sound);
+%sound = inSound*gain;
+output = transfer(inSound,gain);
 end
 
-function out = transfer(in)
+function out = transfer(in,gain)
 logistic = @(x) exp(x) ./ (1 + exp(x));
 out = NaN(size(in));
 for jj = 1:size(in,2)
     for ii = 1:length(in)
         if in(ii,jj) <= 0
-            out(ii,jj) = logistic(in(ii,jj)*2) - 0.5;
+            out(ii,jj) = logistic(in(ii,jj)*2*gain) - 0.5;
         elseif in(ii,jj) > 0
-            out(ii,jj) = 2*logistic(in(ii,jj)*2) - 0.5;
+            out(ii,jj) = (2*logistic(in(ii,jj)*2*gain) - 0.5)/1.5;
         end
     end
 end

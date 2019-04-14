@@ -149,9 +149,11 @@ feedback = 0;
 
 soundsc(inSound,constants.fs)
 disp('Playing the Slapback input')
+pause(length(cleanGuitarSound(:,1))/constants.fs)
 soundsc(output,constants.fs)
 disp('Playing the Slapback Output');
-wavwrite(output,fsag,'output_slapback.wav');
+audiowrite('output_slapback.wav',output,fsag);
+pause(length(cleanGuitarSound(:,1))/constants.fs)
 
 
 % cavern echo settings
@@ -161,10 +163,12 @@ depth = 0.8;
 feedback = 0.7;
 [output]=delay(constants,inSound,depth,delay_time,feedback);
 
-soundsc(inSound,constants.fs)
+sound(inSound,constants.fs)
 disp('Playing the cavern input')
-soundsc(output,constants.fs)
+pause(length(guitarSound)/constants.fs)
+sound(output,constants.fs)
 disp('Playing the cavern Output');
+pause(length(guitarSound)/constants.fs)
 wavwrite(output,fsh,'output_cave.wav');
 
 
@@ -182,7 +186,7 @@ disp('Playing the delayed on the beat Output');
 wavwrite(output,fsg,'output_beatdelay.wav');
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Question 6 - Flanger
+%% Question 6 - Flanger
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 inSound = drumSound;
 constants.fs = fsd;
