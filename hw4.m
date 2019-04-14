@@ -169,7 +169,7 @@ pause(length(guitarSound)/constants.fs)
 sound(output,constants.fs)
 disp('Playing the cavern Output');
 pause(length(guitarSound)/constants.fs)
-wavwrite(output,fsh,'output_cave.wav');
+audiowrite('output_cave.wav',output,fsg);
 
 
 % delay (to the beat) settings
@@ -179,11 +179,11 @@ depth = 1;
 feedback = 1;
 [output]=delay(constants,inSound,depth,delay_time,feedback);
 
-soundsc(inSound,constants.fs)
-disp('Playing the delayed on the beat input')
+%soundsc(inSound,constants.fs)
+%disp('Playing the delayed on the beat input')
 soundsc(output,constants.fs)
 disp('Playing the delayed on the beat Output');
-wavwrite(output,fsg,'output_beatdelay.wav');
+audiowrite('output_beatdelay.wav',output,fsg);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Question 6 - Flanger
