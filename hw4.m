@@ -193,11 +193,12 @@ constants.fs = fsd;
 depth = 0.8;
 delay = .001;   
 width = .002;   
-LFO_Rate = 0.5;   
+LFO_Rate =2;   
 [output]=flanger(constants,inSound,depth,delay,width,LFO_Rate);
 
 soundsc(inSound,constants.fs)
 disp('Playing the Flanger input')
+pause(length(drumSound)/constants.fs)
 soundsc(output,constants.fs)
 disp('Playing the Flanger Output');
 wavwrite(output,fsd,'output_flanger.wav');
@@ -205,7 +206,7 @@ wavwrite(output,fsd,'output_flanger.wav');
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Question 7 - Chorus
+%% Question 7 - Chorus
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 inSound = guitarSound(:,1);
 constants.fs = fsg;
