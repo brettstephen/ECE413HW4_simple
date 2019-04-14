@@ -28,18 +28,18 @@ STDERR=2;                               % Define the standard error stream
 %% Sound Samples
 % claims to be guitar
 % source: http://www.traditionalmusic.co.uk/scales/musical-scales.htm
-[guitarSound, fsg] = wavread('guitar_C_major.wav');
+[guitarSound, fsg] = audioread('guitar_C_major.wav');
 
 % sax riff - should be good for compressor
 % source: http://www.freesound.org/people/simondsouza/sounds/763
-[saxSound, fss] = wavread('sax_riff.wav');
+[saxSound, fss] = audioread('sax_riff.wav');
 
 % a fairly clean guitar riff
 % http://www.freesound.org/people/ERH/sounds/69949/
-[cleanGuitarSound, fsag] = wavread('guitar_riff_acoustic.wav');
+[cleanGuitarSound, fsag] = audioread('guitar_riff_acoustic.wav');
 
 % Harmony central drums (just use the first half)
-[drumSound, fsd] = wavread('drums.wav');
+[drumSound, fsd] = audioread('drums.wav');
 L = size(drumSound,1);
 drumSound = drumSound(1:round(L/2), :);
 
@@ -55,22 +55,24 @@ LFO_rate=0.5;
 %% Question 1 - Compressor
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 threshold = 0.1; 
+slope = 1/4;
 attack = 0.2;
 avg_len = 5000;
-[output,gain]=compressor(constants,saxSound,threshold,slope,avg_len);
+[output,gain]=compressor(constants,saxSound,threshold,slope,attack,avg_len);
 
 soundsc(saxSound,constants.fs)
 disp('Playing the Compressor input')
+pause(length(saxSound)/constants.fs)
 soundsc(output,constants.fs)
 disp('Playing the Compressor Output');
-wavwrite(output,fss,'output_compressor.wav');
+audiowrite('output_compressor.wav',output,fss);
 
 % PLOTS for Question 1d
 
 % TODO: Add code to complete plots
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Question 2 - Ring Modulator
+%% Question 2 - Ring Modulator
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 constants.fs = fsg;
 % the input frequency is fairly arbitrary, but should be about an order of
@@ -82,27 +84,31 @@ depth = 0.5;
 
 soundsc(guitarSound,constants.fs)
 disp('Playing the RingMod input')
+pause(length(guitarSound)/constants.fs)
 soundsc(output,constants.fs)
 disp('Playing the RingMod Output');
-wavwrite(output,fsg,'output_ringmod.wav');
+pause(length(output)/constants.fs)
+audiowrite('output_ringmod.wav',output,fsg);
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Question 3 - Stereo Tremolo
+%% Question 3 - Stereo Tremolo
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 LFO_type = 'sin';
-LFO_rate = 5;
+LFO_rate = 4;
 % lag is specified in number of samples
 % the lag becomes very noticeable one the difference is about 1/10 sec
-lag = constants.fs/4;
-depth = 0.9;
+lag = constants.fs/2;
+depth = 0.5;
 [output]=tremolo(constants,guitarSound,LFO_type,LFO_rate,lag,depth);
 
 soundsc(guitarSound,constants.fs)
 disp('Playing the Tremolo input')
-soundsc(output,constants.fs)
+pause(length(guitarSound)/constants.fs)
+sound(output,constants.fs)
 disp('Playing the Tremolo Output');
-wavwrite(output,fsg,'output_tremelo.wav');
+pause(length(guitarSound)/constants.fs)
+audiowrite('output_tremelo.wav',output,fsg);
 
 
 
@@ -116,20 +122,22 @@ tone = 0.5;
 
 soundsc(inSound,constants.fs)
 disp('Playing the Distortion input')
+pause(length(cleanGuitarSound(:,1))/constants.fs)
 soundsc(output,constants.fs)
 disp('Playing the Distortion Output');
+pause(length(cleanGuitarSound(:,1))/constants.fs)
 wavwrite(output,fsag,'output_distortion.wav');
 
-% look at what distortion does to the spectrum
-L = 10000;
-n = 1:L;
-sinSound = sin(2*pi*440*(n/fsag));
-[output]=distortion(constants,sinSound,gain,tone);
+% % look at what distortion does to the spectrum
+% L = 10000;
+% n = 1:L;
+% sinSound = sin(2*pi*440*(n/fsag));
+% [output]=distortion(constants,sinSound,gain,tone);
 
 % TODO: Add some Sample code to demonstrate the spectrum 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Question 5 - Delay
+%% Question 5 - Delay
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % slapback settings
