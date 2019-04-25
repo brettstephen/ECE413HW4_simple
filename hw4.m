@@ -71,9 +71,9 @@ audiowrite('output_compressor.wav',output,fss);
 
 % TODO: Add code to complete plots
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Question 2 - Ring Modulator
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 constants.fs = fsg;
 % the input frequency is fairly arbitrary, but should be about an order of
 % magnitude higher than the input frequencies to produce a
@@ -105,7 +105,7 @@ depth = 0.5;
 soundsc(guitarSound,constants.fs)
 disp('Playing the Tremolo input')
 pause(length(guitarSound)/constants.fs)
-sound(output,constants.fs)
+soundsc(output,constants.fs)
 disp('Playing the Tremolo Output');
 pause(length(guitarSound)/constants.fs)
 audiowrite('output_tremelo.wav',output,fsg);
@@ -117,7 +117,7 @@ audiowrite('output_tremelo.wav',output,fsg);
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 gain = 20;
 inSound = cleanGuitarSound(:,1);
-tone = 0.5;
+tone = 0.3;
 [output]=distortion(constants,inSound,gain,tone);
 
 soundsc(inSound,constants.fs)
@@ -126,15 +126,22 @@ pause(length(cleanGuitarSound(:,1))/constants.fs)
 soundsc(output,constants.fs)
 disp('Playing the Distortion Output');
 pause(length(cleanGuitarSound(:,1))/constants.fs)
-wavwrite(output,fsag,'output_distortion.wav');
+audiowrite('output_distortion.wav',output,fsag);
 
-% % look at what distortion does to the spectrum
-% L = 10000;
-% n = 1:L;
-% sinSound = sin(2*pi*440*(n/fsag));
-% [output]=distortion(constants,sinSound,gain,tone);
+% look at what distortion does to the spectrum
+L = 10000;
+n = 1:L;
+sinSound = sin(2*pi*440*(n/fsag)).';
+output=distortion(constants,sinSound,gain,tone);
 
-% TODO: Add some Sample code to demonstrate the spectrum 
+figure;
+plot(output(1:400))
+title('Output of Distortion with Sinusoidal Input')
+xlabel('Samples')
+
+figure;
+spectrogram(output,'yaxis')
+title('Spectrum of Output of Distortion with Sinusoidal Input')
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Question 5 - Delay
@@ -142,6 +149,7 @@ wavwrite(output,fsag,'output_distortion.wav');
 
 % slapback settings
 inSound = cleanGuitarSound(:,1);
+constants.fs = fsag;
 delay_time = 0.08; % in seconds
 depth = 0.8;
 feedback = 0;
@@ -179,10 +187,12 @@ depth = 1;
 feedback = 1;
 [output]=delay(constants,inSound,depth,delay_time,feedback);
 
-%soundsc(inSound,constants.fs)
-%disp('Playing the delayed on the beat input')
+soundsc(inSound,constants.fs)
+disp('Playing the delayed on the beat input')
+pause(length(guitarSound)/constants.fs)
 soundsc(output,constants.fs)
 disp('Playing the delayed on the beat Output');
+pause(length(guitarSound)/constants.fs)
 audiowrite('output_beatdelay.wav',output,fsg);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -190,10 +200,10 @@ audiowrite('output_beatdelay.wav',output,fsg);
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 inSound = drumSound;
 constants.fs = fsd;
-depth = 0.8;
+depth = 1;
 delay = .001;   
 width = .002;   
-LFO_Rate =2;   
+LFO_Rate =0.5;   
 [output]=flanger(constants,inSound,depth,delay,width,LFO_Rate);
 
 soundsc(inSound,constants.fs)
@@ -201,7 +211,8 @@ disp('Playing the Flanger input')
 pause(length(drumSound)/constants.fs)
 soundsc(output,constants.fs)
 disp('Playing the Flanger Output');
-wavwrite(output,fsd,'output_flanger.wav');
+pause(length(drumSound)/constants.fs)
+audiowrite('output_flanger.wav',output,fsd);
 
 
 
@@ -210,16 +221,15 @@ wavwrite(output,fsd,'output_flanger.wav');
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 inSound = guitarSound(:,1);
 constants.fs = fsg;
-depth = 0.9;
+depth = 0.8;
 delay = .03;   
-width = 0.1;   
+width = 0.02;   
 LFO_Rate = 0.5; % irrelevant if width = 0
 [output]=flanger(constants,inSound,depth,delay,width,LFO_Rate);
 
 soundsc(inSound,constants.fs)
 disp('Playing the Chorus input')
+pause(length(guitarSound)/constants.fs)
 soundsc(output,constants.fs)
 disp('Playing the Chorus Output');
-wavwrite(output,fsg,'output_chorus.wav');
-
-
+audiowrite('output_chorus.wav',output,fsg);

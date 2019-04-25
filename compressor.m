@@ -24,7 +24,8 @@ fs = constants.fs;
 
 gain = ones(size(inSound));
 sound = [zeros(avg_len-1,size(inSound,2)).' inSound.'].';
-for ii = avg_len:length(sound)
+for jj = avg_len/avg_len:round(length(inSound)/avg_len)
+    ii = jj*avg_len;
     block_power = rms(sound(ii-avg_len+1:ii));
     if block_power
         next_gain = transfer(block_power,threshold,slope)/block_power;
@@ -33,14 +34,35 @@ for ii = avg_len:length(sound)
     end
     
     gain_trans = repmat(linspace(1,next_gain,attack*fs).',1,size(inSound,2));
-    if length(sound)-ii >= attack*fs
+    if length(sound)-ii == attack*fs
         gain(ii-avg_len+1:ii-avg_len+attack*fs,:) = gain(ii-avg_len+1:ii-avg_len+attack*fs,:)...
             .*gain_trans;
+    elseif length(sound)-ii > attack*fs
+        gain(ii-avg_len+1:ii-avg_len+attack*fs,:) = gain(ii-avg_len+1:ii-avg_len+attack*fs,:)...
+            .*gain_trans;
+        gain(ii-avg_len+attack*fs+1:end,:) =gain(ii-avg_len+attack*fs+1:end,:)*next_gain; % wrong, could make all 0
     else
-        gain(ii-avg_len+1:end) = gain(ii-avg_len+1:end).*gain_trans(1:length(sound)-ii,:);
+        gain(ii-avg_len+1:end) = gain(ii-avg_len+1:end).*gain_trans(1:length(sound)-ii+1,:);
     end
-    sound(avg_len:end) = sound(avg_len:end).*gain;
+    sound(avg_len:end) = inSound.*gain; 
 end
+% for ii = avg_len:length(sound)
+%     block_power = rms(sound(ii-avg_len+1:ii));
+%     if block_power
+%         next_gain = transfer(block_power,threshold,slope)/block_power;
+%     elseif ~block_power
+%         next_gain = transfer(block_power,threshold,slope);
+%     end
+%     
+%     gain_trans = repmat(linspace(1,next_gain,attack*fs).',1,size(inSound,2));
+%     if length(sound)-ii >= attack*fs
+%         gain(ii-avg_len+1:ii-avg_len+attack*fs,:) = gain(ii-avg_len+1:ii-avg_len+attack*fs,:)...
+%             .*gain_trans;
+%     else
+%         gain(ii-avg_len+1:end) = gain(ii-avg_len+1:end).*gain_trans(1:length(sound)-ii,:);
+%     end
+%     sound(avg_len:end) = inSound.*gain; 
+% end
 soundOut = inSound.*gain;
 end
 
