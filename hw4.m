@@ -54,22 +54,28 @@ LFO_rate=0.5;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Question 1 - Compressor
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-threshold = 0.1; 
+threshold = 0.05; 
 slope = 1/4;
-attack = 0.2;
+attack = 0.05;
 avg_len = 5000;
-[output,gain]=compressor(constants,saxSound,threshold,slope,attack,avg_len);
+[output,gain,count]=compressor(constants,saxSound,threshold,slope,attack,avg_len);
 
 soundsc(saxSound,constants.fs)
 disp('Playing the Compressor input')
 pause(length(saxSound)/constants.fs)
 soundsc(output,constants.fs)
 disp('Playing the Compressor Output');
+pause(length(saxSound)/constants.fs)
 audiowrite('output_compressor.wav',output,fss);
 
 % PLOTS for Question 1d
-
-% TODO: Add code to complete plots
+figure;
+plot(saxSound)
+hold on;
+plot(output)
+plot(gain)
+legend('input','output','gain')
+title('Compressor Signals')
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Question 2 - Ring Modulator
@@ -142,6 +148,11 @@ xlabel('Samples')
 figure;
 spectrogram(output,'yaxis')
 title('Spectrum of Output of Distortion with Sinusoidal Input')
+
+% I designed my distortion to have soft clipping in order to eliminate
+% sharp discontinuities in the signal, and used a lowpass filter to reduce the presence of higher-order harmonics.
+% I made the transfer function asymmetric, in order to introduce both even and odd harmonics, as even
+% harmonics tend to sound better. This results in a better sounding output.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Question 5 - Delay

@@ -2,9 +2,7 @@ function [output]=distortion(constants,inSound,gain,tone)
 %DISTORTION applies the specified gain to inSound, then applies clipping
 %according to internal parameters and filtering according to the specified
 %tone parameter
-%plot(-3:0.01:0,0.5*(exp(-3:0.01:0)-1))
 
-%plot(-3:0.01:3,[logistic((-3:0.01:0)*2)-0.5 2*(logistic((0.01:0.01:3)*2)-0.5)])
 fs = constants.fs;
 
 filtertype = 'FIR';
@@ -19,7 +17,6 @@ HPF = dsp.LowpassFilter('SampleRate',fs,...
                              'StopbandFrequency',Fstop,...
                              'StopbandAttenuation',Astop);
                          
-%sound = inSound*gain;
 output = HPF(transfer(inSound,gain));
 output = output/max(output);
 end
